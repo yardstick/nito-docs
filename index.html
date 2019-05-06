@@ -225,6 +225,20 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
           </li>
           <li>
+            <a href="#the-flow" class="toc-h1 toc-link" data-title="The Flow">The Flow</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#creating-and-editing-banks-and-items-and-forms-and-rules" class="toc-h2 toc-link" data-title="Creating and Editing Banks and Items, and Forms and Rules">Creating and Editing Banks and Items, and Forms and Rules</a>
+                  </li>
+                  <li>
+                    <a href="#creating-and-launching-exams" class="toc-h2 toc-link" data-title="Creating and Launching Exams">Creating and Launching Exams</a>
+                  </li>
+                  <li>
+                    <a href="#reviewing-exams" class="toc-h2 toc-link" data-title="Reviewing Exams">Reviewing Exams</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </ul>
@@ -262,6 +276,36 @@ curl <span class="s2">"https://api.nito.rapidlms.com/graphql"</span> <span class
 <aside class="notice">
 Replace <code>api-token</code> with your root API token.
 </aside>
+<h1 id='the-flow'>The Flow</h1>
+<p>The basic flow for an integrating application is as follows:</p>
+
+<aside class="notice">
+We'll use some pseudo code here. <code>createThing(widget) -> url</code> means <i>use the <code>createThing</code> mutation or query, passing in a <code>widget</code>, and it will return a URL.</i>
+Obviously the GraphQL doesn't work <i>quite</i> like that, but we'll look at specifics later on.
+</aside>
+<h2 id='creating-and-editing-banks-and-items-and-forms-and-rules'>Creating and Editing Banks and Items, and Forms and Rules</h2>
+<p>You&#39;ll want an exam author to start creating content. To do this you need to create some banks and forms, and then create a URL to launch the editor and open it for the author. </p>
+
+<ol>
+<li>Use <code>createBank()</code> and <code>createForm()</code> to create banks and forms. Save the IDs if you need to, otherwise you can always use <code>banks()</code> and <code>forms()</code> queries to retrieve everything in your account.</li>
+<li>Use <code>createEditorLaunchUrl(bankIds, formIds) -&gt; url</code> to get a URL to open an interface to allow an exam author to edit the given banks (and items in them) and forms (and rules on them).</li>
+<li>Give the URL bank to the client, probably opening an iframe or a new window. Nito takes over from there.</li>
+</ol>
+<h2 id='creating-and-launching-exams'>Creating and Launching Exams</h2>
+<p>When a learner is ready to take an exam, you need to create an exam from a form, and then create a URL to launch the exam.</p>
+
+<ol>
+<li>Use <code>createExam(formId) -&gt; examId</code> to create an exam from a form based on the rules in the form. Hold onto the exam ID you get back.</li>
+<li>Use <code>createExamLaunchUrl(examId) -&gt; url</code> to get a URL to open an interface to the exam driver.</li>
+<li>Give the URL back to the client, probably opening an iframe or a new window. Nito takes over from there.</li>
+</ol>
+<h2 id='reviewing-exams'>Reviewing Exams</h2>
+<p>When a learner has finished their exam, frequently somebody else might need to review that exam.</p>
+
+<ol>
+<li>Use <code>createExamReviewLaunchUrl(examId) -&gt; url</code> to get a URL to open an interface to the exam review screen.</li>
+<li>Give the URL back to the client, probably opening an iframe or a new window. Nito takes over from there.</li>
+</ol>
 <h1 id='errors'>Errors</h1>
 <p>The GraphQL endpoint typically returns <code>200 OK</code> if the query ran through the schema.</p>
 

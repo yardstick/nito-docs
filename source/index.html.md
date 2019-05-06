@@ -9,6 +9,7 @@ toc_footers:
 
 includes:
   - authentication
+  - flow
   - errors
 
 search: true

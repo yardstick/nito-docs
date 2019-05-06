@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nito_docs:
+    build: .
+    environment:
+      VIRTUAL_HOST: docs.nito.fx
+      CERT_NAME: fx
+      HTTPS_METHOD: noredirect
+    volumes:
+      - ./source:/usr/src/app/source
+networks:
+  default:
+    external:
+      name: fenix_default

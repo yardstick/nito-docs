@@ -8,6 +8,7 @@ services:
       HTTPS_METHOD: noredirect
     volumes:
       - ./source:/usr/src/app/source
+      - ./build://usr/src/app/build
 networks:
   default:
     external:
